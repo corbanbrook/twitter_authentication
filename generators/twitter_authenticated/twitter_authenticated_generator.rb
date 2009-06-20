@@ -78,6 +78,8 @@ class TwitterAuthenticatedGenerator < Rails::Generator::NamedBase
       m.directory File.join('test/functional', users_class_path)
       m.directory File.join('test/unit', class_path)
 
+      m.template 'twitter_oauth.yml', 'config/twitter_oauth.yml'
+
       # initialize the user model template
       m.template 'user.rb', File.join('app/models', class_path, "#{file_name}.rb")
 
@@ -97,7 +99,7 @@ class TwitterAuthenticatedGenerator < Rails::Generator::NamedBase
       m.template 'users_helper.rb', File.join('app/helpers', users_class_path, "#{users_file_name}_helper.rb")
 
       # Controller templates
-      m.template 'login.html.erb',  File.join('app/views', sessions_class_path, sessions_file_name, "new.html.erb")
+      m.template 'login.html.erb',  File.join('app/views', sessions_class_path, sessions_file_name, "index.html.erb")
 
       # Unit tests and fixtures
       #m.template 'authenticated_test_helper.rb', File.join('lib', 'authenticated_test_helper.rb')
@@ -114,7 +116,7 @@ class TwitterAuthenticatedGenerator < Rails::Generator::NamedBase
         }, :migration_file_name => "create_#{file_path.gsub(/\//, '_').pluralize}"
       end
       
-      m.route_resource  sessions_singular_name
+      #m.route_resource  sessions_singular_name
       m.route_resources users_plural_name
     end
 
@@ -123,11 +125,21 @@ class TwitterAuthenticatedGenerator < Rails::Generator::NamedBase
     case action
     when "generate"
       puts
-      puts "+ added twitter_authentication."
+      puts "Generating twitter_authentication."
       puts
+      puts "Try these for some familiar login URLs if you like:"
+      puts
+      puts %(map.login '/login', :controller => '#{sessions_file_name}', :action => 'login')
+      puts %(map.logout '/logout', :controller => '#{sessions_file_name}', :action => 'logout')
+      puts %(map.callback '/callback', :controller => '#{sessions_file_name}', :action => 'callback')
+      puts
+      puts "Remember to look over the create_users migration to add fields you require. The #{class_name} model is"
+      puts "bootstrapped to the authenticated twitter user. Use the #{class_name} model to store additional fields"
+      puts "or to cache twitter account information."
+
     when "destroy"
       puts
-      puts "+ removed twitter_authentication."
+      puts "Removing twitter_authentication."
       puts
     else
       puts

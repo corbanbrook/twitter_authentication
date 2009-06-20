@@ -3,29 +3,18 @@ class <%= sessions_class_name %>Controller < ApplicationController
   # Be sure to include TwitterAuthenticationSystem in Application Controller instead
   include TwitterAuthenticatedSystem
 
-  # render new.rhtml
-  def new
-    reset_session
-    oauth = Twitter::OAuth.new('consumer token', 'consumer secret')
-    session[:request_token] = oauth.request_token.token
-    session[:request_secret] = oauth.request_token.secret
-    redirect_to 'http://twitter.com/oauth/authenticate?oauth_token=' + oauth.request_token.token
+  def login
+    redirect_to_twitter_login
   end
 
-  def create
-    oauth = Twitter::OAuth.new('consumer token', 'consumer secret')
-    begin
-      oauth.authorize_from_request(session[:request_token], session[:request_secret])
-    rescue
-      render :text => 'could not authorize.'
-    end
+  def callback
+    credentials = handle_callback
 
-    twitter = Twitter::Base.new(oauth)
-    login = twitter.verify_credentials.screen_name
-
-    unless @user = <%= class_name %>.find_by_login(login)
-      @user = <%= class_name %>.new(:login => login, :token => oauth.access_token.token, :secret => oauth.access_token.secret)
+    unless @user = <%= class_name %>.find_by_twitter_id(credentials[:twitter_id])
+      @user = <%= class_name %>.new(credentials)
       @user.save
+    else
+      @user.update_attributes credentials
     end
 
     self.current_<%= file_name %> = @user
@@ -34,7 +23,7 @@ class <%= sessions_class_name %>Controller < ApplicationController
     flash[:notice] = "Logged in successfully"
   end
 
-  def destroy
+  def logout
     reset_session
     
     redirect_to root_path

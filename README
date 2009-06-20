@@ -1,23 +1,40 @@
+
                             Twitter Authentication
 
+
 This is a "Sign in with Twitter"-oauth authorization generator for rails, based
-closely on the restful_authentication plugin.
+closely on the restful_authentication plugin by Rick Olson which can be found at
+http://github.com/technoweenie/restful-authentication/tree/master.
 
 "Sign in with Twitter" is the pattern of authentication that allows users to
-connect their Twitter account with third-party services in as little is one
+connect their Twitter account with third-party services in as little as one
 click.
 
 
-Usage:
+Step 1 - Installation:
+
+  ./script/plugin install git://github.com/corbanbrook/twitter_authentication.git
+
+
+Step 2 - Generate Authentication System:
 
   ./script/generate twitter_authenticated user sessions
 
-The first parameter specifies the model that bootstraps the twitter account
-(typically a user or account model).
+  The first parameter specifies the model that bootstraps the twitter account
+  (typically a user or account model).
 
-The second parameter specifies the sessions controller name.  This is
-the controller that handles the actual login/logout function on the
-site.
+  The second parameter specifies the sessions controller name.  This is the
+  controller that handles the actual login/logout function on the site.
+
+
+Step 3 - Register Application with Twitter:
+
+  Visit http://twitter.com/oauth_clients/ and register a new application.
+
+  Point the Callback url to: http://your.application.url/sessions/callback
+
+  Upon completion you will receive a consumer key and secret you will need to
+  add to config/twitter_oauth.yml
 
 
 Requirements:
@@ -29,7 +46,7 @@ Requirements:
 
 
 
-
+@corban                                                    weare.buildingsky.net
 ________________________________________________________________________________
 
        Copyright (c) 2009 Corban Brook, released under the MIT license
