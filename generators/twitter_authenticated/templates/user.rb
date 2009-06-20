@@ -1,4 +1,7 @@
 class <%= class_name %> < ActiveRecord::Base
+  validates_presence_of :twitter_id, :login
+  validates_uniqueness_of :twitter_id
+
   def twitter
     consumer_token = YAML::load_file("#{RAILS_ROOT}/config/twitter_oauth.yml").symbolize_keys
     #oauth = Twitter::OAuth.new(consumer_token[:consumer_key], consumer_token[:consumer_secret])

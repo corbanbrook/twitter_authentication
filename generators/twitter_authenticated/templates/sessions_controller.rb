@@ -4,7 +4,13 @@ class <%= sessions_class_name %>Controller < ApplicationController
   include TwitterAuthenticatedSystem
 
   def login
-    redirect_to_twitter_login
+    if consumer_authorized?
+      redirect_to_twitter_login
+    else
+      # twitter did not accept your consumer key and secret, check config/twitter_oauth
+      redirect_to root_path
+      flash[:notice] = "Application not authorized to access twitter."
+    end
   end
 
   def callback
@@ -12,15 +18,18 @@ class <%= sessions_class_name %>Controller < ApplicationController
 
     unless @user = <%= class_name %>.find_by_twitter_id(credentials[:twitter_id])
       @user = <%= class_name %>.new(credentials)
-      @user.save
     else
-      @user.update_attributes credentials
+      @user.attributes = credentials
     end
 
-    self.current_<%= file_name %> = @user
-
-    redirect_to root_path
-    flash[:notice] = "Logged in successfully"
+    if @user.save
+      self.current_<%= file_name %> = @user
+      redirect_to root_path
+      flash[:notice] = "Logged in successfully"
+    else
+      redirect_to root_path
+      flash[:notice] = "Login failed."
+    end
   end
 
   def logout
