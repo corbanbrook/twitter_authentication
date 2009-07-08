@@ -27,7 +27,15 @@ Step 2 - Generate Authentication System:
   controller that handles the actual login/logout function on the site.
 
 
-Step 3 - Register Application with Twitter:
+Step 3 - Migrate User Account Model
+
+  View the created migration and see if it meets your need. This model bootstaps
+  itself onto the users twitter account and caches all user details. Any additional
+  fields you require to store should be added to the migration at this time.
+
+  ./rake db:migrate RAILS_ENV=development|production
+
+Step 4 - Register Application with Twitter:
 
   Visit http://twitter.com/oauth_clients/ and register a new application.
 
@@ -36,13 +44,45 @@ Step 3 - Register Application with Twitter:
   Upon completion you will receive a consumer key and secret you will need to
   add to config/twitter_oauth.yml
 
+Step 5 - Add Authentication to your Controllers
+
+  To add authentication to protect your controllers use a before_filter
+
+  ie.
+
+    before_filter :login_required
+
+
+* Now your application should be ready to go? *
+
 
 Requirements:
 
-* Twitter gem by John NuneMaker    http://twitter.rubyforge.org/
+* Twitter gem by John NuneMaker http://twitter.rubyforge.org/
   an API wrapper for Twitter and Twitter Search API's
 
   gem install twitter
+
+
+
+API
+
+* login_required
+
+  Use on controllers to autheticate access to individual pages.
+
+  ie.
+
+  class UsersController < ApplicationController
+    before_filter :login_required, :except => 'index'
+    ..
+  end
+
+* authorized?, logged_in?
+
+  Show the logged in state of the user.
+
+
 
 
 
