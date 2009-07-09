@@ -46,7 +46,9 @@ Step 4 - Register Application with Twitter:
 
 Step 5 - Add Authentication to your Controllers
 
-  To add authentication to protect your controllers use a before_filter
+  First 'include TwitterAuthenticatedSystem' in your ApplicationController.
+
+  Then, to add authentication to protect your controllers use a before_filter
 
   ie.
 
@@ -81,7 +83,6 @@ API
 * authorized?, logged_in?
 
   Show the logged in state of the user.
-
 
 
 
