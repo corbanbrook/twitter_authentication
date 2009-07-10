@@ -46,14 +46,17 @@ Step 4 - Register Application with Twitter:
 
 Step 5 - Add Authentication to your Controllers
 
-  First 'include TwitterAuthenticatedSystem' in your ApplicationController.
+  First 'include TwitterAuthenticatedSystem' in your ApplicationController (you
+  may remove the included module from the user and sessions controller now).
 
   Then, to add authentication to protect your controllers use a before_filter
 
   ie.
 
+  class AdminController < ApplicationController
     before_filter :login_required
-
+    ..
+  end
 
 * Now your application should be ready to go? *
 
@@ -64,6 +67,8 @@ Requirements:
   an API wrapper for Twitter and Twitter Search API's
 
   gem install twitter
+
+  require 'twitter' (at the bottom of your config/environment.rb)
 
 
 
